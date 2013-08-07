@@ -1,0 +1,92 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+import pygtk
+pygtk.require('2.0')
+import gtk
+import os
+
+class DoTheLogOut:
+
+    # Cancel/exit
+    def delete_event(self, widget, event, data=None):
+        gtk.main_quit()
+        return False
+
+    # Reboot
+    def reboot(self, widget):
+        os.system("sudo shutdown -r now && fluxbox-remote \"exit\"")
+
+    # Shutdown
+    def shutdown(self, widget):
+        os.system("sudo shutdown -h now && fluxbox-remote \"exit\"")
+
+     # Logout
+    def logout(self, widget):
+        os.system("fluxbox-remote \"exit\"")
+
+    def __init__(self):
+        # Create a new window
+        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+	self.window.set_decorated(False)
+        self.window.set_resizable(False)
+        self.window.set_position(1)
+        self.window.set_border_width(20)
+
+
+        # Create an accelgroup and add it to the window
+        accel_group = gtk.AccelGroup()
+        self.window.add_accel_group(accel_group)
+
+        # Create a box to pack widgets into
+        self.table1 = gtk.Table(2, 3, True)
+        self.window.add(self.table1)
+
+        # Create shutdown button
+        self.button4 = gtk.Button("Shutdown")
+        self.button4.set_border_width(5)
+        self.button4.connect("clicked", self.shutdown)
+        self.button4.add_accelerator("clicked", accel_group,
+            gtk.gdk.keyval_from_name('s'), 0, 0)
+        self.button4.show()
+
+        # Create reboot button
+        self.button3 = gtk.Button("Reboot")
+        self.button3.set_border_width(5)
+        self.button3.connect("clicked", self.reboot)
+        self.button3.add_accelerator("clicked", accel_group,
+            gtk.gdk.keyval_from_name('r'), 0, 0)
+        self.button3.show()
+
+        # Create logout button
+        self.button5 = gtk.Button("Logout")
+        self.button5.set_border_width(5)
+        self.button5.connect("clicked", self.logout)
+        self.button5.add_accelerator("clicked", accel_group,
+            gtk.gdk.keyval_from_name('l'), 0, 0)
+        self.button5.show()
+
+	# Create cancel button
+        self.button1 = gtk.Button("Cancel")
+        self.button1.set_border_width(5)
+        self.button1.connect("clicked", self.delete_event, "closed")
+        self.button1.add_accelerator("clicked", accel_group,
+            gtk.gdk.keyval_from_name('Escape'), 0, 0)
+        self.button1.add_accelerator("clicked", accel_group,
+            gtk.gdk.keyval_from_name('c'), 0, 0)
+        self.button1.show()
+	
+	self.table1.attach(self.button4, 0, 1, 0, 1)
+	self.table1.attach(self.button3, 1, 2, 0, 1)
+	self.table1.attach(self.button5, 2, 3, 0, 1)
+	self.table1.attach(self.button1, 1, 2, 1, 2)
+
+        self.table1.show()
+        self.window.show()
+
+def main():
+    gtk.main()
+
+if __name__ == "__main__":
+    run_it = DoTheLogOut()
+    main()
